@@ -1,0 +1,16 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.CalcContainer {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 500px;
+  height: 600px;
+}
+
+.CalcButton {
+  flex: 1 1 18%;
+  border: solid black 1px;
+}

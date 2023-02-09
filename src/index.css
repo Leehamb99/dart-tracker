@@ -7,10 +7,24 @@ body {
   display: flex;
   flex-wrap: wrap;
   min-width: 500px;
-  height: 600px;
+  min-height: 600px;
 }
 
 .CalcButton {
   flex: 1 1 18%;
   border: solid black 1px;
+}
+
+.ScoreboardContainer {
+
+    display: flex;
+    flex-wrap: wrap;
+    min-width: 500px;
+    min-height: 100px;
+}
+
+.ScoreboardItem {
+  flex: 1;
+  border: solid black 1px;
+  text-align: center;
 }

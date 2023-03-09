@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+
 
 const Scoreboard = (props) => {
     
@@ -8,7 +8,7 @@ const Scoreboard = (props) => {
             
                 <div className='ScoreboardItem'>
                     <div >
-                        {props.turn.data == props.player.id ? "Me " : "Not Me "}
+                        {props.turn.data === props.player.id ? "Me " : "Not Me "}
 
                         {props.player.name}
                 

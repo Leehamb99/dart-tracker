@@ -1,6 +1,6 @@
 import { Calculator, Scoreboard } from '../../components'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 const outs =
   [[170, "T20", "T20", 50], [167, "T20", "T19", 50], [164, "T20", "T18", 50],
   [161, "T20", "T17", 50], [160, "T20", "T20", "D20"], [158, "T20", "T20", "D19"],
@@ -81,7 +81,7 @@ const Game = () => {
     }
   }
   const SettingTurn = () => {
-    if (turn.data == (players.length - 1) && clicks > 2) {
+    if (turn.data === (players.length - 1) && clicks > 2) {
       setTurn({ data: 0 })
       clicks = 0
     }

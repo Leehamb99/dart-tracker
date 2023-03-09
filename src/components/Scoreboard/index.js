@@ -2,21 +2,26 @@ import React from 'react'
 import { useState } from 'react'
 
 const Scoreboard = (props) => {
+    
     return (
         <>
             
                 <div className='ScoreboardItem'>
                     <div >
-                        {props.active ? "Me " : "Not Me "}
+                        {props.turn.data == props.player.id ? "Me " : "Not Me "}
 
                         {props.player.name}
                 
                     </div>
                     <div>
-                        {props.active ? props.player.score - props.score : props.player.score}
+                        {props.player.score}
+
                        
 
+                    </div>
 
+                    <div>
+                        {props.player.finish}
                     </div>
 
                 </div>
@@ -26,6 +31,7 @@ const Scoreboard = (props) => {
         </>
 
     )
+    
 }
 
 export default Scoreboard

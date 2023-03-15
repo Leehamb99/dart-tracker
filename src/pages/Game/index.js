@@ -55,6 +55,7 @@ const outs =
 const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 50, 'Double', 'Triple', 'Miss', 'Remove', 'Add']
 var starting = 0 
 var clicks = 0
+var multiplier = 1
 var players = [{ id: 0, name: 'Liam', score: 200, finish: 'n/a' }, { id: 1, name: 'Jade', score: 200, finish: 'n/a' }, { id: 2, name: 'Paul', score: 200, finish: 'n/a' }, { id: 3, name: 'Dave', score: 200, finish: 'n/a' }]
 const Game = () => {
   const [score, setScore] = useState({ data: 0 })
@@ -121,7 +122,7 @@ const Game = () => {
         ...players[turn.data],
         score: starting
       }
-      
+      checkVal(players[turn.data].score)
       setTurn({data: turn.data + 1})
     }
   }
@@ -130,7 +131,18 @@ const Game = () => {
     
     clicks++
     if (typeof (value) === "string") {
-      console.log("Adding/Removing/Miss Or Triple/Double")
+      
+      if (value === 'Double'){
+        multiplier = 2
+        clicks--
+      }else if(value === 'Triple'){
+        multiplier = 3
+        clicks--
+      }else{
+        setScore({data: value})
+        console.log("Adding/Removing/Miss Or Triple/Double")
+      }
+      
     }
     else {
       console.log("hit" + clicks)
@@ -138,12 +150,12 @@ const Game = () => {
 
       players[turn.data] = {
         ...players[turn.data],
-        score: players[turn.data].score - value
+        score: players[turn.data].score - (value * multiplier)
       }     
      if ((players[turn.data].score) < 170) {
         checkVal(players[turn.data].score)
       } 
-      
+      multiplier = 1
 
     }
 

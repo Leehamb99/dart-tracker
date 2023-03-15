@@ -65,6 +65,10 @@ const Game = () => {
   var end = 0
 
   useEffect(() => {
+    multiplier = 1
+  }, [players[turn.data]])
+
+  useEffect(() => {
     WinCheck(players[turn.data].score)
     SettingTurn()
   }, [score])
@@ -128,7 +132,6 @@ const Game = () => {
   }
 
   const stuff = (value) => {
-    
     clicks++
     if (typeof (value) === "string") {
       
@@ -140,7 +143,6 @@ const Game = () => {
         clicks--
       }else{
         setScore({data: value})
-        console.log("Adding/Removing/Miss Or Triple/Double")
       }
       
     }
@@ -155,7 +157,6 @@ const Game = () => {
      if ((players[turn.data].score) < 170) {
         checkVal(players[turn.data].score)
       } 
-      multiplier = 1
 
     }
 

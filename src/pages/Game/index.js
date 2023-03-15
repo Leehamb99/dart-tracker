@@ -1,6 +1,6 @@
 import { Calculator, Scoreboard } from '../../components'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 const outs =
   [[170, "T20", "T20", 50], [167, "T20", "T19", 50], [164, "T20", "T18", 50],
   [161, "T20", "T17", 50], [160, "T20", "T20", "D20"], [158, "T20", "T20", "D19"],
@@ -53,16 +53,29 @@ const outs =
 
 
 const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 50, 'Double', 'Triple', 'Miss', 'Remove', 'Add']
-
+var starting = 0 
 var clicks = 0
 var players = [{ id: 0, name: 'Liam', score: 200, finish: 'n/a' }, { id: 1, name: 'Jade', score: 200, finish: 'n/a' }, { id: 2, name: 'Paul', score: 200, finish: 'n/a' }, { id: 3, name: 'Dave', score: 200, finish: 'n/a' }]
 const Game = () => {
   const [score, setScore] = useState({ data: 0 })
   const [turn, setTurn] = useState({ data: 0 })
+  var newscore = players[turn.data].score
+  var newturn = turn.data
   var end = 0
+
+  useEffect(() => {
+    WinCheck(players[turn.data].score)
+    SettingTurn()
+  }, [score])
+// 
+  useEffect(() => {
+    starting = players[turn.data].score
+    console.log("running")
+  },[turn])
+ 
+
   const checkVal = (val) => {
-    console.log(outs.length)
-    for (let i = 0; i < outs.length - 1; i++) {
+    for (let i = 0; i < outs.length; i++) {
       if (val === outs[i][0]) {
         end = outs[i].slice(1)
         players[turn.data] = {
@@ -80,46 +93,57 @@ const Game = () => {
         finish: "n/a"
     }
   }
+
+
+  
   const SettingTurn = () => {
+    
     if (turn.data === (players.length - 1) && clicks > 2) {
       setTurn({ data: 0 })
       clicks = 0
+      console.log(turn)
+      
+      
+
     }
     else if (clicks > 2) {
       setTurn({ data: turn.data + 1 })
-      end = {data: 0}
       clicks = 0
-    } else {
-      setTurn({ data: turn.data })
+      
     }
   }
-  const stuff = (value) => {
 
+  const WinCheck = (val) => {
+    if (val <= 1){
+      clicks = 0
+      console.log(starting)
+      players[turn.data] = {
+        ...players[turn.data],
+        score: starting
+      }
+      
+      setTurn({data: turn.data + 1})
+    }
+  }
+
+  const stuff = (value) => {
+    
+    clicks++
     if (typeof (value) === "string") {
       console.log("Adding/Removing/Miss Or Triple/Double")
     }
     else {
-      clicks++
       console.log("hit" + clicks)
       setScore({ data: value })
 
       players[turn.data] = {
         ...players[turn.data],
         score: players[turn.data].score - value
-      }
-  
-    
-
-      if ((players[turn.data].score) < 170) {
+      }     
+     if ((players[turn.data].score) < 170) {
         checkVal(players[turn.data].score)
-
-        
-        SettingTurn()
-      } else {
-
-        SettingTurn()
-      }
-
+      } 
+      
 
     }
 

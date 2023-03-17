@@ -48,36 +48,41 @@ const outs =
   [27, "S11", "D8"], [25, "S9", "D8"], [23, "S7", "D8"],
   [21, "S5", "D8"], [19, "S3", "D8"], [17, "S13", "D2"],
   [15, "S7", "D4"], [13, "S5", "D4"], [11, "S3", "D4"],
-  [9, "S1", "D4"],[7, "S3", "D2"], [5, "S1", "D2"],
+  [9, "S1", "D4"], [7, "S3", "D2"], [5, "S1", "D2"],
   [3, "S1", "D1"]]
 
 
 const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 50, 'Double', 'Triple', 'Miss', 'Remove', 'Add']
-var starting = 0 
+var starting = 0
 var clicks = 0
 var multiplier = 1
 var players = [{ id: 0, name: 'Liam', score: 200, finish: 'n/a' }, { id: 1, name: 'Jade', score: 200, finish: 'n/a' }, { id: 2, name: 'Paul', score: 200, finish: 'n/a' }, { id: 3, name: 'Dave', score: 200, finish: 'n/a' }]
 const Game = () => {
   const [score, setScore] = useState({ data: 0 })
   const [turn, setTurn] = useState({ data: 0 })
-  var newscore = players[turn.data].score
-  var newturn = turn.data
   var end = 0
 
   useEffect(() => {
+    console.log("resetting")
     multiplier = 1
   }, [players[turn.data]])
 
   useEffect(() => {
-    WinCheck(players[turn.data].score)
+    WinCheck(turn.data, multiplier)
     SettingTurn()
   }, [score])
-// 
+
   useEffect(() => {
     starting = players[turn.data].score
     console.log("running")
-  },[turn])
- 
+  }, [turn])
+
+  const LessThan40 = (x) => {
+    players[x] = {
+      ...players[x],
+      finish: ("D" + players[x].score / 2)
+    }
+  }
 
   const checkVal = (val) => {
     for (let i = 0; i < outs.length; i++) {
@@ -90,36 +95,42 @@ const Game = () => {
         console.log(players[turn.data])
         return (true)
       }
-        
-      }
-      console.log("made it")
-      players[turn.data] = {
-        ...players[turn.data],
-        finish: "n/a"
+
+    }
+    console.log("made it")
+    players[turn.data] = {
+      ...players[turn.data],
+      finish: "n/a"
     }
   }
 
 
-  
+
   const SettingTurn = () => {
-    
+
     if (turn.data === (players.length - 1) && clicks > 2) {
       setTurn({ data: 0 })
       clicks = 0
       console.log(turn)
-      
-      
+
+
 
     }
     else if (clicks > 2) {
       setTurn({ data: turn.data + 1 })
       clicks = 0
-      
+
     }
   }
 
-  const WinCheck = (val) => {
-    if (val <= 1){
+  const WinCheck = (val, mult) => {
+    console.log("checking Win")
+    if (players[val].score === 0){
+      if (mult === 2){
+        console.log("winner")
+      }
+    }
+    if (players[val].score <= 1) {
       clicks = 0
       console.log(starting)
       players[turn.data] = {
@@ -127,24 +138,30 @@ const Game = () => {
         score: starting
       }
       checkVal(players[turn.data].score)
-      setTurn({data: turn.data + 1})
+      if (turn.data === players.length - 1) {
+        setTurn({ data: 0 })
+      } else {
+
+        setTurn({ data: turn.data + 1 })
+      }
     }
+
   }
 
   const stuff = (value) => {
     clicks++
     if (typeof (value) === "string") {
-      
-      if (value === 'Double'){
+
+      if (value === 'Double') {
         multiplier = 2
         clicks--
-      }else if(value === 'Triple'){
+      } else if (value === 'Triple') {
         multiplier = 3
         clicks--
-      }else{
-        setScore({data: value})
+      } else {
+        setScore({ data: value })
       }
-      
+
     }
     else {
       console.log("hit" + clicks)
@@ -153,10 +170,14 @@ const Game = () => {
       players[turn.data] = {
         ...players[turn.data],
         score: players[turn.data].score - (value * multiplier)
-      }     
-     if ((players[turn.data].score) < 170) {
+      }
+      if (players[turn.data].score <= 40 && players[turn.data].score % 2 === 0) {
+        LessThan40(turn.data)
+      }
+      else if ((players[turn.data].score) < 170) {
         checkVal(players[turn.data].score)
-      } 
+      }
+
 
     }
 

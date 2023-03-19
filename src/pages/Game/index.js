@@ -56,19 +56,19 @@ const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 1
 var starting = 0
 var clicks = 0
 var multiplier = 1
-var players = [{ id: 0, name: 'Liam', score: 200, finish: 'n/a' }, { id: 1, name: 'Jade', score: 200, finish: 'n/a' }, { id: 2, name: 'Paul', score: 200, finish: 'n/a' }, { id: 3, name: 'Dave', score: 200, finish: 'n/a' }]
+var players = [{ id: 0, name: 'Liam', score: 200, finish: 'n/a', legs: 0 }, { id: 1, name: 'Jade', score: 200, finish: 'n/a', legs: 0 }, { id: 2, name: 'Paul', score: 200, finish: 'n/a', legs: 0 }, { id: 3, name: 'Dave', score: 200, finish: 'n/a', legs: 0 }]
 const Game = () => {
   const [score, setScore] = useState({ data: 0 })
   const [turn, setTurn] = useState({ data: 0 })
   var end = 0
 
+
   useEffect(() => {
     console.log("resetting")
     multiplier = 1
-  }, [players[turn.data]])
+  }, players)
 
   useEffect(() => {
-    WinCheck(turn.data, multiplier)
     SettingTurn()
   }, [score])
 
@@ -123,14 +123,18 @@ const Game = () => {
     }
   }
 
-  const WinCheck = (val, mult) => {
+  const WinCheck = (val, mult) => { //This is why it doesn't work, finish the win check and all will work
     console.log("checking Win")
-    if (players[val].score === 0){
-      if (mult === 2){
+    if (players[val].score === 0 && mult === 2){
+          
+      
+        
         console.log("winner")
-      }
+        players[turn.data].legs = players[turn.data].legs + 1
+      // This function works... need to create new function that resets the game and set correct person first.
+            
     }
-    if (players[val].score <= 1) {
+    else if (players[val].score <= 1) {
       clicks = 0
       console.log(starting)
       players[turn.data] = {
@@ -177,7 +181,8 @@ const Game = () => {
       else if ((players[turn.data].score) < 170) {
         checkVal(players[turn.data].score)
       }
-
+      WinCheck(turn.data, multiplier)
+      multiplier = 1
 
     }
 

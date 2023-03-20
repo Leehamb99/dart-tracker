@@ -61,6 +61,7 @@ const Game = () => {
   const [score, setScore] = useState({ data: 0 })
   const [turn, setTurn] = useState({ data: 0 })
   var end = 0
+  var target = 3
 
 
   useEffect(() => {
@@ -81,6 +82,22 @@ const Game = () => {
     players[x] = {
       ...players[x],
       finish: ("D" + players[x].score / 2)
+    }
+  }
+
+  const endGame = () => {
+    console.log("End Game, submitting results")
+  }
+  const ResetGame = () => {
+    for (let i = 0; i < players.length; i++) {
+      if (players[i].legs === target){
+        endGame()
+      }
+      players[i].score = 501
+      players[i].finish = 'n/a'
+      clicks = 0
+
+      
     }
   }
 
@@ -131,7 +148,7 @@ const Game = () => {
         
         console.log("winner")
         players[turn.data].legs = players[turn.data].legs + 1
-      // This function works... need to create new function that resets the game and set correct person first.
+        ResetGame()
             
     }
     else if (players[val].score <= 1) {

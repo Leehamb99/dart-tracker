@@ -16,12 +16,15 @@ const Scoreboard = (props) => {
                     <div>
                         {props.player.score}
 
-                       
-
+                    
+        
                     </div>
 
                     <div>
                         {props.player.finish}
+                    </div>
+                    <div>
+                        Legs : {props.player.legs}
                     </div>
 
                 </div>

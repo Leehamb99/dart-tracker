@@ -67,10 +67,12 @@ const Game = () => {
   useEffect(() => {
     console.log("resetting")
     multiplier = 1
+     // eslint-disable-next-line
   }, players)
 
   useEffect(() => {
     SettingTurn()
+     // eslint-disable-next-line
   }, [score])
 
   useEffect(() => {

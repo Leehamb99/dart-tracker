@@ -1,2 +1,5 @@
 export { default as Calculator } from './Calculator'
 export { default as Scoreboard } from './Scoreboard'
+export { default as Games } from './Games'
+export { default as Users } from './Users'
+export { default as GameSettings } from './GameSettings'

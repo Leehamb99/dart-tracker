@@ -1,14 +1,14 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Game }  from './pages'
+import { Game, Menu }  from './pages'
 
 const App = () => {
   return (
     <>
     <BrowserRouter>
     <Routes>
-
-      <Route path="/" element={<Game />} />
+      <Route path="/" element={<Menu/ >} />
+      <Route path="/Game" element={<Game />} />
     </Routes>
     </BrowserRouter>
     </>

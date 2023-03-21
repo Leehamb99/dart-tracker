@@ -28,3 +28,49 @@ body {
   border: solid black 1px;
   text-align: center;
 }
+
+.GameContainer {
+
+  display: flex;
+  flex-wrap: wrap;
+
+}
+
+.GameItem {
+  margin: 2vw;
+  text-align: center;
+
+  font-size: 36px;
+  flex: 1 1;
+  border-right: solid black 2px;
+  border-bottom: solid black 2px;
+}
+
+.GameItem:active{
+  background-color: purple;
+}
+
+.UserContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+.UserContainerItem{
+  padding: 1vw;
+  margin: 2vw;
+  text-align: center;
+
+  font-size: 20px;
+  border: solid black 1px;
+  border-radius: 8px;
+
+}
+
+.GameSettingsContainer{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+
+

@@ -1,4 +1,5 @@
 import { Calculator, Scoreboard } from '../../components'
+import { useLocation } from 'react-router-dom'
 
 import React, { useState, useEffect } from 'react'
 const outs =
@@ -57,23 +58,51 @@ var starting = 0
 var clicks = 0
 var multiplier = 1
 var firstplayer = 0
-var players = [{ id: 0, name: 'Liam', score: 200, finish: 'n/a', legs: 0 }, { id: 1, name: 'Jade', score: 200, finish: 'n/a', legs: 0 }, { id: 2, name: 'Paul', score: 200, finish: 'n/a', legs: 0 }, { id: 3, name: 'Dave', score: 200, finish: 'n/a', legs: 0 }]
-const Game = () => {
+var players = []
+var started = false
+
+const Game = (props) => {
+
+  console.log('working')
+  console.log(clicks)
+  if (!started) {
+    started = true
+    props.players.map((player, key) => {
+      if (player.active) {
+        players.push({ id: key, name: player.name, score: 501, finish: 'n/a', legs: 0 })
+      }
+      else {
+        key--
+      }
+
+    })
+  }
+
+
+
+
+
+
+
+
   const [score, setScore] = useState({ data: 0 })
   const [turn, setTurn] = useState({ data: 0 })
+  let location = useLocation()
+  console.log(props)
+  console.log(location)
   var end = 0
-  var target = 3
+  var target = props.sets
 
 
   useEffect(() => {
     console.log("resetting")
     multiplier = 1
-     // eslint-disable-next-line
+    // eslint-disable-next-line
   }, players)
 
   useEffect(() => {
     SettingTurn()
-     // eslint-disable-next-line
+    // eslint-disable-next-line
   }, [score])
 
   useEffect(() => {
@@ -95,17 +124,17 @@ const Game = () => {
     firstplayer++
     clicks = 0
     for (let i = 0; i < players.length; i++) {
-      if (players[i].legs === target){
+      if (players[i].legs === target) {
         endGame()
       }
-      
+
       players[i].score = 501
       players[i].finish = 'n/a'
-      
 
-      
+
+
     }
-    setTurn({data: firstplayer})
+    setTurn({ data: firstplayer })
   }
 
   const checkVal = (val) => {
@@ -147,16 +176,16 @@ const Game = () => {
     }
   }
 
-  const WinCheck = (val, mult) => { 
+  const WinCheck = (val, mult) => {
     console.log("checking Win")
-    if (players[val].score === 0 && mult === 2){
-          
-      
-        
-        console.log("winner")
-        players[turn.data].legs = players[turn.data].legs + 1
-        ResetGame()
-            
+    if (players[val].score === 0 && mult === 2) {
+
+
+
+      console.log("winner")
+      players[turn.data].legs = players[turn.data].legs + 1
+      ResetGame()
+
     }
     else if (players[val].score <= 1) {
       clicks = 0
@@ -209,6 +238,7 @@ const Game = () => {
       multiplier = 1
 
     }
+    console.log(players)
 
 
 
@@ -220,6 +250,8 @@ const Game = () => {
         {players.map((player) => (
 
           <Scoreboard end={end} turn={turn} player={player} score={score} />
+
+
 
         ))}
 

@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom';
 import { Games, Users, GameSettings } from '../../components'
 import { Game } from '../../pages'
 import Button from 'react-bootstrap/Button';
-import { ToggleButtonGroup } from 'react-bootstrap';
+import axios from 'axios';
+import { Login } from '../../pages'
+
 
 
 
@@ -14,29 +16,83 @@ const games = ["501", "301", "101", "Around The World", "Profiles"]
 
 
 const Menu = () => {
-  let selectablePlayers =[{ id: 0, name: 'Liam', active: false }, { id: 1, name: 'Jade', active: false }, { id: 2, name: 'Paul', active: false}, { id: 3, name: 'Dave', active: false }]
-  const [numOfGames, setNumOfGames] = useState(0)
-  const [numOfSets, setNumOfSets] = useState(0)
-  const [clicks, setClicks] = useState(0)
-  const [players, setPlayers ] = useState (
-    selectablePlayers
+
+
+
+
+  let url = "http://localhost:8000/user/"
+
+  let reqInstance = axios.create({
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("access_token")}`
+    }
+  }
   )
 
 
 
+  const [selectablePlayers, SetselectablePlayers] = useState([])
+  const [password, setPassword] = useState()
+  const [username, setUsername] = useState()
+
+  const getData = async () => {
+    const res = await reqInstance.get(url)
+    const data = await res.data
+    console.log(data)
+    let newVal = { id: data.id, name: data.username, active: false, score: 501, darts: data.darts_thrown, avg: (data.score / (data.darts_thrown / 3)).toFixed(1) }
+    console.log(newVal)
+    SetselectablePlayers(selectablePlayers => [...selectablePlayers, newVal])
+    console.log(selectablePlayers)
+  }
+
+  useEffect(() => {
+    getData()
+  }, [])
+
+  const handleNewLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:8000/api/token/', {
+        username: username,
+        password: password
+      });
+      console.log(response.data)
+      localStorage.setItem(`access_token${selectablePlayers.length + 1}`, response.data.access);
+      
+    } catch (error) {
+      console.log(error);
+      alert('Login failed');
+    }
+  };
+
+
+
+
+
+  const [numOfGames, setNumOfGames] = useState(0)
+  const [numOfSets, setNumOfSets] = useState(0)
+  const [clicks, setClicks] = useState(0)
+  const [adding, setAdding] = useState(false)
+
+
+  const AddUser = () => {
+    setAdding(true)
+
+  }
+
   const handleChange = (x, y) => {
     console.log("changing ", x)
-    setClicks(clicks + 1)    
+    setClicks(clicks + 1)
 
-    if (clicks > 0){
-      selectablePlayers = players
-      selectablePlayers[x] = {
-        ...players[x],
-        active: !players[x].active
-      }
+    if (clicks >= 0) {
+      let newData = selectablePlayers
+      newData[x].active = !newData[x].active
 
-    }else{
-      selectablePlayers[x] = {
+      SetselectablePlayers(newData)
+
+    } else {
+
+      SetselectablePlayers[x] = {
         ...selectablePlayers[x],
         active: !y
       }
@@ -45,7 +101,7 @@ const Menu = () => {
 
 
   }
-  
+
 
 
   const SettingGames = (x) => {
@@ -62,63 +118,93 @@ const Menu = () => {
     console.log(numOfGames)
   }
 
-  const whoActive = () => {
-    players.map((player, index) => {
-      if (player.active) {
-        players.push( {id: index, name: player.name, score: 501, finish: 'n/a', legs: 0 }  )
-      }
-      else{
-        index--
-      }
 
-
-
-
-
-})}
 
 
 
   return (
     <>
-      {numOfGames && numOfSets ?
+      {numOfGames && numOfSets ? (
 
+        <Game numOfGames={numOfGames} numOfSets={numOfSets} players={selectablePlayers} />
 
-        <Game numOfGames={numOfGames} numOfSets={numOfSets} players={players}/>
-      
+      )
         :
+        (
+          <div className="MenuContainer">
 
-        <div className="MenuContainer">
-
-          <div className="GameContainer">
-            {games.map((game, key) => (
-              <Games key={key} name={game} />
-            ))}
-
-          </div>
-          <h2> Users </h2>
-          <div className="UserContainer">
-              
-         
-            {players.map((player, key) => (
-              <Users handleChange={handleChange} key={key} player={player} />
+            <div className="GameContainer">
+              {games.map((game, key) => (
+                <Games key={key} name={game} />
               ))}
 
-
-          </div>
-
-          <h1> Game Settings </h1>
-
-          <div className="GameSettingsContainer">
-
-            <GameSettings numOfGames={numOfGames} numOfSets={numOfSets} SettingGames={SettingGames} SettingSets={SettingSets} />
-
-            <div>
-              {numOfSets}
             </div>
-          </div>
 
-        </div>}
+            <h2> Users </h2>
+
+
+
+
+            <div className="UserContainer">
+
+
+
+
+
+
+
+              {selectablePlayers && selectablePlayers.map((player, index) => (
+                <Users handleChange={handleChange} key={index} index={index} player={player} />
+              ))}
+
+              {adding ? (
+
+                <form onSubmit={handleNewLogin}>
+                  <label htmlFor="Username">Username</label>
+                  <input
+                    type="username"
+                    id="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                  <label htmlFor="password">Password</label>
+                  <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button type="submit">Login</button>
+                </form>
+
+
+
+
+              ) : (
+
+                <Button onClick={() => AddUser()}> Add User </Button>
+              )
+              }
+
+
+
+
+
+
+            </div>
+
+            <h1> Game Settings </h1>
+
+            <div className="GameSettingsContainer">
+
+              <GameSettings numOfGames={numOfGames} numOfSets={numOfSets} SettingGames={SettingGames} SettingSets={SettingSets} />
+
+              <div>
+                {numOfSets}
+              </div>
+            </div>
+
+          </div>)}
     </>
   )
 }

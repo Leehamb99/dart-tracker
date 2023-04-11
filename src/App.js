@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Game, Menu }  from './pages'
+import { Login, Game, Menu, Registration }  from './pages'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const App = () => {
@@ -8,8 +8,11 @@ const App = () => {
     <>
     <BrowserRouter>
     <Routes>
-      <Route path="/" element={<Menu />} />
-      <Route path="/Game" element={<Game />} />
+      <Route path="/" element={<Login />} />
+      <Route path='/Registration' element={<Registration />} />
+      <Route path="/Game" element={<Menu />} />
+      
+
     </Routes>
     </BrowserRouter>
     </>

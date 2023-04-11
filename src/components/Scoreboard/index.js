@@ -3,6 +3,7 @@ import React from 'react'
 
 const Scoreboard = (props) => {
     
+    console.log(props.player.legs)
     return (
         <>
             
@@ -25,6 +26,14 @@ const Scoreboard = (props) => {
                     </div>
                     <div>
                         Legs : {props.player.legs}
+                    </div>
+                    <div>
+                        Last 3 : {props.player.last_3.map(score => {
+                            return(score+" ")
+                        })}
+                    </div>
+                    <div>
+                        Average : {(props.player.total / (props.player.darts / 3)).toFixed(1)}
                     </div>
 
                 </div>

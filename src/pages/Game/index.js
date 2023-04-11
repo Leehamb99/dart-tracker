@@ -1,5 +1,6 @@
 import { Calculator, Scoreboard } from '../../components'
 import { useLocation } from 'react-router-dom'
+import axios from 'axios'
 
 import React, { useState, useEffect } from 'react'
 const outs =
@@ -53,7 +54,7 @@ const outs =
   [3, "S1", "D1"]]
 
 
-const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 50, 'Double', 'Triple', 'Miss', 'Remove', 'Add']
+const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 50, 'Double', 'Triple', 'Miss']
 var starting = 0
 var clicks = 0
 var multiplier = 1
@@ -63,13 +64,23 @@ var started = false
 
 const Game = (props) => {
 
+
+  const instance = axios.create({
+    headers: {
+      Authorization : `Bearer ${localStorage.getItem("access_token")}` // loop here through access tokens `access_token${i}`
+      },
+    baseURL: 'http://localhost:8000/edit/',
+    method: 'PATCH',
+    timeout: 5000
+  })
+
   console.log('working')
   console.log(clicks)
   if (!started) {
     started = true
     props.players.map((player, key) => {
       if (player.active) {
-        players.push({ id: key, name: player.name, score: 501, finish: 'n/a', legs: 0 })
+        players.push({ id: key, name: player.name, score: 101, finish: 'n/a', legs: 1, games: 0, darts: 0, total: 0, last_3: []})
       }
       else {
         key--
@@ -87,11 +98,10 @@ const Game = (props) => {
 
   const [score, setScore] = useState({ data: 0 })
   const [turn, setTurn] = useState({ data: 0 })
-  let location = useLocation()
-  console.log(props)
-  console.log(location)
+  console.log(players)
   var end = 0
-  var target = props.sets
+  var target = {sets: props.numOfSets, games: props.numOfGames}
+
 
 
   useEffect(() => {
@@ -118,18 +128,31 @@ const Game = (props) => {
   }
 
   const endGame = () => {
-    console.log("End Game, submitting results")
   }
-  const ResetGame = () => {
+  const ResetGame = async() => {
     firstplayer++
     clicks = 0
+    if (firstplayer === players.length) {
+      firstplayer = 0
+    }
     for (let i = 0; i < players.length; i++) {
-      if (players[i].legs === target) {
+      await instance.request({
+        data: {
+          score: players[i].total,
+          darts_thrown: players[i].darts
+        }
+      })
+      if (players[i].games === target.games ) {
+        console.log("Ending Game")
         endGame()
       }
-
-      players[i].score = 501
-      players[i].finish = 'n/a'
+      players[i] = {...players[i],
+        score: 101,
+        finish: 'n/a',
+        darts: 0,
+        total: 0
+        
+        }
 
 
 
@@ -162,6 +185,7 @@ const Game = (props) => {
   const SettingTurn = () => {
 
     if (turn.data === (players.length - 1) && clicks > 2) {
+      players[turn.data].last_3.length = 0
       setTurn({ data: 0 })
       clicks = 0
       console.log(turn)
@@ -170,23 +194,38 @@ const Game = (props) => {
 
     }
     else if (clicks > 2) {
+      players[turn.data].last_3.length = 0
       setTurn({ data: turn.data + 1 })
       clicks = 0
 
     }
   }
 
-  const WinCheck = (val, mult) => {
+  const WinCheck = async (val, mult, score) => {
     console.log("checking Win")
-    if (players[val].score === 0 && mult === 2) {
+
+    if (players[val].score === 0 && mult === 2 || players[val].score === 0 && score === 50) {
+
+
+      console.log("winner", players[turn.data].name)
+      players[turn.data] = {...players[turn.data],
+        legs: players[turn.data].legs + 1
+      }
 
 
 
-      console.log("winner")
-      players[turn.data].legs = players[turn.data].legs + 1
+      if (players[turn.data].legs === target.sets) {
+        players[turn.data] = {
+          ...players[turn.data],
+          games: players[turn.data].games + 1,
+          sets: 0
+        }
+      }
+      console.log(players[turn.data])
       ResetGame()
 
     }
+
     else if (players[val].score <= 1) {
       clicks = 0
       console.log(starting)
@@ -196,10 +235,12 @@ const Game = (props) => {
       }
       checkVal(players[turn.data].score)
       if (turn.data === players.length - 1) {
+        
         setTurn({ data: 0 })
+        players[turn.data].last_3.length = 0
       } else {
-
         setTurn({ data: turn.data + 1 })
+        players[turn.data].last_3.length = 0
       }
     }
 
@@ -216,25 +257,37 @@ const Game = (props) => {
         multiplier = 3
         clicks--
       } else {
-        setScore({ data: value })
+        setScore({ data: 0 })
+        players[turn.data] = {
+          ...players[turn.data],
+          darts: players[turn.data].darts + 1
+        }
+        players[turn.data].last_3.push(0)
+
       }
 
     }
     else {
+      if (value > 20){
+        multiplier = 1
+      }
       console.log("hit" + clicks)
       setScore({ data: value })
-
+      
       players[turn.data] = {
         ...players[turn.data],
-        score: players[turn.data].score - (value * multiplier)
+        score: players[turn.data].score - (value * multiplier),
+        darts: players[turn.data].darts + 1,
+        total: players[turn.data].total + (value * multiplier),
       }
+      players[turn.data].last_3.push(value*multiplier)
       if (players[turn.data].score <= 40 && players[turn.data].score % 2 === 0) {
         LessThan40(turn.data)
       }
       else if ((players[turn.data].score) < 170) {
         checkVal(players[turn.data].score)
       }
-      WinCheck(turn.data, multiplier)
+      WinCheck(turn.data, multiplier, value)
       multiplier = 1
 
     }

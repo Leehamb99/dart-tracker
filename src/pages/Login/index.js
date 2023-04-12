@@ -10,11 +10,11 @@ function LoginPage() {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://darts-backend-production.up.railway.app/api/token/', { 
+      const response = await axios.post('https://darts-backend-production.up.railway.app/api/token/', {
         username: username,
         password: password
-       });
-       console.log(response.data)
+      });
+      console.log(response.data)
       localStorage.setItem("access_token", response.data.access);
       navigate('/Game'); // Redirect to dashboard on successful login
     } catch (error) {
@@ -25,25 +25,33 @@ function LoginPage() {
 
   return (
     <>
-    <form onSubmit={handleLogin}>
-      <label htmlFor="Username">Username</label>
-      <input
-        type="username"
-        id="username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        />
-      <label htmlFor="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        />
-      <button type="submit">Login</button>
-    </form>
-        <button onClick={() => navigate('/Registration')}>Register</button>
-        </>
+      <div className='flex flex-col items-center justify-center bg-gray-300 p-5 h-screen'>
+
+        <form className="flex flex-col items-center justify-center"onSubmit={handleLogin}>
+
+          <input
+            className='m-1 block max-w-sm mx-auto placeholder:italic 
+            placeholder:text-slate-400 block bg-white w-full border-2 border-green-700 rounded-md py-2 pl-3 pr-3 shadow-sm mr-5 focus:outline-none focus:border-4 focus:border-green-500 focus:ring-green-500 focus:ring-1 sm:text-sm'
+            placeholder='Username'
+            type="username"
+            id="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+          <input
+            className='m-1 block max-w-sm mx-auto placeholder:italic 
+            placeholder:text-slate-400 block bg-white w-full border-2 border-green-700 rounded-md py-2 pl-3 pr-3 shadow-sm mr-5 focus:outline-none focus:border-4 focus:border-green-500 focus:ring-green-500 focus:ring-1 sm:text-sm'
+            placeholder='Password'
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button className="m-1 object-center bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded" type="submit">Login</button>
+        </form>
+        <button className="m-1 bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded" onClick={() => navigate('/Registration')}>Register</button>
+      </div>
+    </>
   );
 }
 

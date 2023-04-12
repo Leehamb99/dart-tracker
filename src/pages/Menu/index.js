@@ -10,7 +10,7 @@ import { Login } from '../../pages'
 
 
 
-const games = ["501", "301", "101", "Around The World", "Profiles"]
+const games = ["501"]
 
 
 
@@ -58,7 +58,7 @@ const Menu = () => {
       });
       console.log(response.data)
       localStorage.setItem(`access_token${selectablePlayers.length + 1}`, response.data.access);
-      
+
     } catch (error) {
       console.log(error);
       alert('Login failed');
@@ -124,87 +124,82 @@ const Menu = () => {
 
   return (
     <>
-      {numOfGames && numOfSets ? (
 
-        <Game numOfGames={numOfGames} numOfSets={numOfSets} players={selectablePlayers} />
+      <div className='flex flex-col items-center  bg-gray-300 h-screen'>
 
-      )
-        :
-        (
-          <div className="MenuContainer">
+        {numOfGames && numOfSets ? (
 
-            <div className="GameContainer">
-              {games.map((game, key) => (
-                <Games key={key} name={game} />
-              ))}
+          <Game numOfGames={numOfGames} numOfSets={numOfSets} players={selectablePlayers} />
 
-            </div>
+        )
+          :
+          (
+            <div className="MenuContainer">
 
-            <h2> Users </h2>
+              <div className="GameContainer">
+                {games.map((game, key) => (
+                  <Games key={key} name={game} />
+                ))}
 
-
-
-
-            <div className="UserContainer">
-
-
-
-
-
-
-
-              {selectablePlayers && selectablePlayers.map((player, index) => (
-                <Users handleChange={handleChange} key={index} index={index} player={player} />
-              ))}
-
-              {adding ? (
-
-                <form onSubmit={handleNewLogin}>
-                  <label htmlFor="Username">Username</label>
-                  <input
-                    type="username"
-                    id="username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                  />
-                  <label htmlFor="password">Password</label>
-                  <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
-                  <button type="submit">Login</button>
-                </form>
-
-
-
-
-              ) : (
-
-                <Button onClick={() => AddUser()}> Add User </Button>
-              )
-              }
-
-
-
-
-
-
-            </div>
-
-            <h1> Game Settings </h1>
-
-            <div className="GameSettingsContainer">
-
-              <GameSettings numOfGames={numOfGames} numOfSets={numOfSets} SettingGames={SettingGames} SettingSets={SettingSets} />
-
-              <div>
-                {numOfSets}
               </div>
-            </div>
 
-          </div>)}
+              <h2> Users </h2>
+
+              <div className="UserContainer">
+
+                {selectablePlayers && selectablePlayers.map((player, index) => (
+                  <Users handleChange={handleChange} key={index} index={index} player={player} />
+                ))}
+
+                {adding ? (
+
+                  <form onSubmit={handleNewLogin}>
+                    <label htmlFor="Username">Username</label>
+                    <input
+                      type="username"
+                      id="username"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <label htmlFor="password">Password</label>
+                    <input
+                      type="password"
+                      id="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <button type="submit">Login</button>
+                  </form>
+
+
+
+
+                ) : (
+
+                  <Button onClick={() => AddUser()}> Add User </Button>
+                )
+                }
+
+
+
+
+
+
+              </div>
+
+              <h1> Game Settings </h1>
+
+              <div className="GameSettingsContainer">
+
+                <GameSettings numOfGames={numOfGames} numOfSets={numOfSets} SettingGames={SettingGames} SettingSets={SettingSets} />
+
+                <div>
+                  {numOfSets}
+                </div>
+              </div>
+
+            </div>)}
+      </div>
     </>
   )
 }

@@ -147,7 +147,7 @@ const Game = (props) => {
         endGame()
       }
       players[i] = {...players[i],
-        score: 101,
+        score: 501,
         finish: 'n/a',
         darts: 0,
         total: 0

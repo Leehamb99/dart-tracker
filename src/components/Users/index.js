@@ -6,14 +6,15 @@ const Users = (props) => {
   console.log("Rerendered")
   return (
     <>
-      <div className="UserContainerItem" onClick={() => props.handleChange(props.index, props.player.active)}
-        style={{'color': props.player.active ? 'pink' : 'black'}}
+      <div className="m-2 p-6 max-w-sm mx-auto rounded-xl shadow-lg flex flex-col items-center justify-center space-x-4 hover:outline-none hover:border-4  hover:border-gray-500" onClick={() => props.handleChange(props.index, props.player.active)}
+        style={{'backgroundColor': props.player.active ? 'darkgreen' : 'darkgray',
+                'color': props.player.active ? 'white' : "black"}}
         >
          {props.player.name}
-         <div>
+         <div className=''>
          3 Dart Average: {(props.player.avg)}
          </div>
-         <div>
+         <div className=''>
           Darts Thrown : {props.player.darts}
          </div>
       </div>

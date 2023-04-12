@@ -69,7 +69,7 @@ const Game = (props) => {
     headers: {
       Authorization : `Bearer ${localStorage.getItem("access_token")}` // loop here through access tokens `access_token${i}`
       },
-    baseURL: 'http://localhost:8000/edit/',
+    baseURL: 'https://darts-backend-production.up.railway.app/edit/',
     method: 'PATCH',
     timeout: 5000
   })

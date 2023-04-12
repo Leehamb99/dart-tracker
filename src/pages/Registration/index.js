@@ -11,7 +11,7 @@ function RegistrationPage() {
   const handleRegistration = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/register/', ({
+      const response = await axios.post('https://darts-backend-production.up.railway.app/register/', ({
 
           username: name,
           password: password,

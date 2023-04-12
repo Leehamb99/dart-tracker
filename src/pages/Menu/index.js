@@ -20,7 +20,7 @@ const Menu = () => {
 
 
 
-  let url = "http://localhost:8000/user/"
+  let url = "https://darts-backend-production.up.railway.app/user/"
 
   let reqInstance = axios.create({
     headers: {
@@ -52,7 +52,7 @@ const Menu = () => {
   const handleNewLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8000/api/token/', {
+      const response = await axios.post('https://darts-backend-production.up.railway.app/api/token/', {
         username: username,
         password: password
       });

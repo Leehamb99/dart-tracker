@@ -7,22 +7,22 @@ const Scoreboard = (props) => {
     return (
         <>
 
-            <div className={props.turn.data === props.player.id ? "w-screen bg-[#309F6A]" : "w-screen bg-[#E3292E]"}>
-                <div >
+            <div className={props.turn.data === props.player.id ? "w-screen bg-[#309F6A] flex flex-col items-center" : "w-screen bg-[#E3292E] flex flex-col items-center"}>
+                <h2 >
 
                     {props.player.name}
 
-                </div>
-                <div>
+                </h2>
+                <h2 >
                     {props.player.score}
 
 
 
-                </div>
+                </h2>
 
-                <div>
+                <h1 className='text-white bold'>
                     {props.player.finish}
-                </div>
+                </h1>
                 <div>
                     Legs : {props.player.legs}
                 </div>

@@ -159,7 +159,7 @@ const Menu = () => {
 
               <h2> Users </h2>
 
-              <div className="flex flex-col items-center">
+              <div className="flex flex-col items-center bg-[#309F6A] w-screen/3">
 
                 {selectablePlayers && selectablePlayers.map((player, index) => (
                   <Users handleChange={handleChange} key={index} index={index} player={player} />

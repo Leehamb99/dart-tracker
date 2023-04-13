@@ -45,7 +45,7 @@ const Menu = () => {
     })
     let data = await res.data
     console.log(data)
-    let newVal = { id: data.id, name: data.username, active: false, score: 501, darts: data.darts_thrown, avg: (data.score / (data.darts_thrown / 3)).toFixed(1) }
+    let newVal = { id: data.id, name: data.username, active: false, score: 101, darts: data.darts_thrown, avg: (data.score / (data.darts_thrown / 3)).toFixed(1) }
     console.log(newVal)
     SetselectablePlayers(selectablePlayers => [...selectablePlayers, newVal])
     console.log(selectablePlayers)

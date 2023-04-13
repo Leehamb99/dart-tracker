@@ -61,6 +61,7 @@ var multiplier = 1
 var firstplayer = 0
 var players = []
 var started = false
+let instance = []
 
 const Game = () => {
 
@@ -72,14 +73,9 @@ const Game = () => {
   let numOfSets = location.state.numOfSets
   let selectedPlayers = location.state.selectablePlayers
 
-  const instance = axios.create({
-    headers: {
-      Authorization : `Bearer ${localStorage.getItem("access_token")}` // loop here through access tokens `access_token${i}`
-      },
-    baseURL: 'https://darts-backend-production.up.railway.app/edit/',
-    method: 'PATCH',
-    timeout: 5000
-  })
+
+
+
 
   console.log('working')
   console.log(clicks)
@@ -87,7 +83,7 @@ const Game = () => {
     started = true
     selectedPlayers.map((player, key) => {
       if (player.active) {
-        players.push({ id: key, name: player.name, score: 501, finish: 'n/a', legs: 0, games: 0, darts: 0, total: 0, last_3: []})
+        players.push({ id: key, name: player.name, score: 101, finish: 'n/a', legs: 0, games: 0, darts: 0, total: 0, last_3: [] })
       }
       else {
         key--
@@ -96,8 +92,18 @@ const Game = () => {
     })
   }
 
+  for (let i = 0; i < players.length; i++) {
 
 
+    instance[i] = axios.create({
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem(`access_token${i+1}`)}` // loop here through access tokens `access_token${i}`
+      },
+      baseURL: 'https://darts-backend-production.up.railway.app/edit/',
+      method: 'PATCH',
+      timeout: 5000
+    })
+  }
 
 
 
@@ -107,7 +113,7 @@ const Game = () => {
   const [turn, setTurn] = useState({ data: 0 })
   console.log(players)
   var end = 0
-  var target = {sets: numOfSets, games: numOfGames}
+  var target = { sets: numOfSets, games: numOfGames }
 
 
 
@@ -135,30 +141,32 @@ const Game = () => {
   }
 
   const endGame = () => {
+    alert('Winner')
   }
-  const ResetGame = async() => {
+  const ResetGame = async () => {
     firstplayer++
     clicks = 0
     if (firstplayer === players.length) {
       firstplayer = 0
     }
     for (let i = 0; i < players.length; i++) {
-      await instance.request({
+      await instance[i].request({
         data: {
           score: players[i].total,
           darts_thrown: players[i].darts
         }
       })
-      if (players[i].games === target.games ) {
+      if (players[i].games === target.games) {
         console.log("Ending Game")
         endGame()
       }
-      players[i] = {...players[i],
+      players[i] = {
+        ...players[i],
         score: 501,
         finish: 'n/a',
         darts: 0,
         total: 0
-        }
+      }
 
 
 
@@ -214,7 +222,8 @@ const Game = () => {
 
 
       console.log("winner", players[turn.data].name)
-      players[turn.data] = {...players[turn.data],
+      players[turn.data] = {
+        ...players[turn.data],
         legs: players[turn.data].legs + 1
       }
 
@@ -241,7 +250,7 @@ const Game = () => {
       }
       checkVal(players[turn.data].score)
       if (turn.data === players.length - 1) {
-        
+
         setTurn({ data: 0 })
         players[turn.data].last_3.length = 0
       } else {
@@ -274,19 +283,19 @@ const Game = () => {
 
     }
     else {
-      if (value > 20){
+      if (value > 20) {
         multiplier = 1
       }
       console.log("hit" + clicks)
       setScore({ data: value })
-      
+
       players[turn.data] = {
         ...players[turn.data],
         score: players[turn.data].score - (value * multiplier),
         darts: players[turn.data].darts + 1,
         total: players[turn.data].total + (value * multiplier),
       }
-      players[turn.data].last_3.push(value*multiplier)
+      players[turn.data].last_3.push(value * multiplier)
       if (players[turn.data].score <= 40 && players[turn.data].score % 2 === 0) {
         LessThan40(turn.data)
       }
@@ -305,34 +314,34 @@ const Game = () => {
 
   return (
     <>
-    <div className='flex flex-col justify-start items-center  bg-[#F9DFBC] h-screen'>
-
-    
-      <BackButton sets={target.sets} />    
-
-       <div className='w-screen flex justify-between'>
-        {players.map((player) => (
-
-          <Scoreboard end={end} turn={turn} player={player} score={score} />
-          
-
-          
-        ))}
-
-      </div>
-      <div className='grid grid-cols-5 w-screen h-screen text-center'>
-
-        {values.map((value) => (
-          <Calculator key={value} stuff={stuff} number={value} score={players} />
-        )
-        )}
+      <div className='flex flex-col justify-start items-center  bg-[#F9DFBC] h-screen'>
 
 
-      </div>
-      {/* <div>
+        <BackButton sets={target.sets} />
+
+        <div className='w-screen flex justify-between'>
+          {players.map((player) => (
+
+            <Scoreboard end={end} turn={turn} player={player} score={score} />
+
+
+
+          ))}
+
+        </div>
+        <div className='grid grid-cols-5 w-screen h-screen text-center'>
+
+          {values.map((value) => (
+            <Calculator key={value} stuff={stuff} number={value} score={players} />
+          )
+          )}
+
+
+        </div>
+        {/* <div>
       <button onClick={() => {setGame(true)}}>Start!</button>
     </div> */}
-    </div>
+      </div>
     </>
 
 

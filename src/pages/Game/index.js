@@ -1,8 +1,8 @@
-import { Calculator, Scoreboard } from '../../components'
-import { useLocation } from 'react-router-dom'
+import { Calculator, Scoreboard, BackButton } from '../../components'
 import axios from 'axios'
 
 import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 const outs =
   [[170, "T20", "T20", 50], [167, "T20", "T19", 50], [164, "T20", "T18", 50],
   [161, "T20", "T17", 50], [160, "T20", "T20", "D20"], [158, "T20", "T20", "D19"],
@@ -62,8 +62,15 @@ var firstplayer = 0
 var players = []
 var started = false
 
-const Game = (props) => {
+const Game = () => {
 
+  const location = useLocation()
+
+  console.log(location.state)
+
+  let numOfGames = location.state.numOfGames
+  let numOfSets = location.state.numOfSets
+  let selectedPlayers = location.state.selectablePlayers
 
   const instance = axios.create({
     headers: {
@@ -78,9 +85,9 @@ const Game = (props) => {
   console.log(clicks)
   if (!started) {
     started = true
-    props.players.map((player, key) => {
+    selectedPlayers.map((player, key) => {
       if (player.active) {
-        players.push({ id: key, name: player.name, score: 101, finish: 'n/a', legs: 1, games: 0, darts: 0, total: 0, last_3: []})
+        players.push({ id: key, name: player.name, score: 501, finish: 'n/a', legs: 0, games: 0, darts: 0, total: 0, last_3: []})
       }
       else {
         key--
@@ -100,7 +107,7 @@ const Game = (props) => {
   const [turn, setTurn] = useState({ data: 0 })
   console.log(players)
   var end = 0
-  var target = {sets: props.numOfSets, games: props.numOfGames}
+  var target = {sets: numOfSets, games: numOfGames}
 
 
 
@@ -151,7 +158,6 @@ const Game = (props) => {
         finish: 'n/a',
         darts: 0,
         total: 0
-        
         }
 
 
@@ -299,17 +305,22 @@ const Game = (props) => {
 
   return (
     <>
-      <div className='ScoreboardContainer'>
+    <div className='flex flex-col justify-start items-center  bg-[#F9DFBC] h-screen'>
+
+    
+      <BackButton sets={target.sets} />    
+
+       <div className='w-screen flex justify-between'>
         {players.map((player) => (
 
           <Scoreboard end={end} turn={turn} player={player} score={score} />
+          
 
-
-
+          
         ))}
 
       </div>
-      <div className='CalcContainer'>
+      <div className='grid grid-cols-5 w-screen h-screen text-center'>
 
         {values.map((value) => (
           <Calculator key={value} stuff={stuff} number={value} score={players} />
@@ -321,6 +332,7 @@ const Game = (props) => {
       {/* <div>
       <button onClick={() => {setGame(true)}}>Start!</button>
     </div> */}
+    </div>
     </>
 
 

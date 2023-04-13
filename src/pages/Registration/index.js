@@ -29,7 +29,7 @@ function RegistrationPage() {
   };
 
   return (
-    <form className="flex flex-col items-center justify-center bg-gray-300 max-w-3x1 p-5 h-screen" onSubmit={handleRegistration}>
+    <form className="flex flex-col items-center justify-center bg-[#F9DFBC] max-w-3x1 p-5 h-screen" onSubmit={handleRegistration}>
       <input
         className='m-1 block max-w-sm mx-auto placeholder:italic 
         placeholder:text-slate-400 block bg-white w-full border-2 border-green-700 rounded-md py-2 pl-3 pr-3 shadow-sm mr-5 focus:outline-none focus:border-4 focus:border-green-500 focus:ring-green-500 focus:ring-1 sm:text-sm'

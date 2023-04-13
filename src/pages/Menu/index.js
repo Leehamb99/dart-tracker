@@ -6,38 +6,44 @@ import { Game } from '../../pages'
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import { Login } from '../../pages'
+import { useNavigate, Route } from "react-router-dom";
 
 
 
 
 const games = ["501"]
 
-
+let count = 1
 
 
 const Menu = () => {
 
+  const [selectablePlayers, SetselectablePlayers] = useState([])
+  const [password, setPassword] = useState()
+  const [username, setUsername] = useState()
+  
 
-
+  const navigate = useNavigate()
 
   let url = "https://darts-backend-production.up.railway.app/user/"
 
   let reqInstance = axios.create({
     headers: {
-      Authorization: `Bearer ${localStorage.getItem("access_token")}`
+      Authorization: `Bearer ${localStorage.getItem(`access_token${count}`)}`
     }
   }
   )
 
 
 
-  const [selectablePlayers, SetselectablePlayers] = useState([])
-  const [password, setPassword] = useState()
-  const [username, setUsername] = useState()
 
   const getData = async () => {
-    const res = await reqInstance.get(url)
-    const data = await res.data
+    let res = await axios.get(url, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem(`access_token${count}`)}`
+      }
+    })
+    let data = await res.data
     console.log(data)
     let newVal = { id: data.id, name: data.username, active: false, score: 501, darts: data.darts_thrown, avg: (data.score / (data.darts_thrown / 3)).toFixed(1) }
     console.log(newVal)
@@ -52,12 +58,18 @@ const Menu = () => {
   const handleNewLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://darts-backend-production.up.railway.app/api/token/', {
+      count++
+      let res = await axios.post('https://darts-backend-production.up.railway.app/api/token/', {
         username: username,
         password: password
       });
-      console.log(response.data)
-      localStorage.setItem(`access_token${selectablePlayers.length + 1}`, response.data.access);
+      let data = await res.data
+      console.log(data)
+      console.log(count)
+      localStorage.setItem(`access_token${count}`, data.access);
+      
+
+      getData()
 
     } catch (error) {
       console.log(error);
@@ -66,6 +78,13 @@ const Menu = () => {
   };
 
 
+  const StartGame = () => {
+    return(
+
+      navigate("/Game", { state: { numOfGames, numOfSets, selectablePlayers}})
+
+      )
+    }
 
 
 
@@ -125,16 +144,11 @@ const Menu = () => {
   return (
     <>
 
-      <div className='flex flex-col items-center  bg-gray-300 h-screen'>
+      <div className='flex flex-col justify-start items-center  bg-[#F9DFBC] h-screen'>
 
-        {numOfGames && numOfSets ? (
-
-          <Game numOfGames={numOfGames} numOfSets={numOfSets} players={selectablePlayers} />
-
-        )
-          :
-          (
-            <div className="MenuContainer">
+         
+          
+            <div className="flex flex-col items-center justify-center">
 
               <div className="GameContainer">
                 {games.map((game, key) => (
@@ -145,7 +159,7 @@ const Menu = () => {
 
               <h2> Users </h2>
 
-              <div className="UserContainer">
+              <div className="flex flex-col items-center">
 
                 {selectablePlayers && selectablePlayers.map((player, index) => (
                   <Users handleChange={handleChange} key={index} index={index} player={player} />
@@ -189,16 +203,13 @@ const Menu = () => {
 
               <h1> Game Settings </h1>
 
-              <div className="GameSettingsContainer">
+              <div className="flex justify-center">
 
                 <GameSettings numOfGames={numOfGames} numOfSets={numOfSets} SettingGames={SettingGames} SettingSets={SettingSets} />
-
-                <div>
-                  {numOfSets}
-                </div>
+                
               </div>
-
-            </div>)}
+              <button onClick={() => StartGame()}> Start </button>
+            </div>
       </div>
     </>
   )

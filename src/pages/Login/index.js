@@ -15,8 +15,8 @@ function LoginPage() {
         password: password
       });
       console.log(response.data)
-      localStorage.setItem("access_token", response.data.access);
-      navigate('/Game'); // Redirect to dashboard on successful login
+      localStorage.setItem("access_token1", response.data.access);
+      navigate('/Menu'); // Redirect to dashboard on successful login
     } catch (error) {
       console.log(error);
       alert('Login failed');
@@ -25,7 +25,7 @@ function LoginPage() {
 
   return (
     <>
-      <div className='flex flex-col items-center justify-center bg-gray-300 p-5 h-screen'>
+      <div className='flex flex-col items-center justify-center bg-[#F9DFBC] p-5 h-screen'>
 
         <form className="flex flex-col items-center justify-center"onSubmit={handleLogin}>
 

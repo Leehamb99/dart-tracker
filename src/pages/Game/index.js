@@ -62,6 +62,9 @@ var firstplayer = 0
 var players = []
 var started = false
 let instance = []
+let shots = []
+
+
 
 const Game = () => {
   
@@ -91,8 +94,41 @@ const Game = () => {
         i--
       }
     }
-
     }
+
+  
+const Undo = () => {
+  if (turn.data = 0){
+    setTurn({data: players.length})
+  }
+  else{
+    setTurn({data: turn.data - 1})
+  }
+
+  let temp_shot = shots.pop()
+  if (clicks === 0){
+    
+    
+    players[turn.data] = {
+      ...players[turn.data],
+      score: players[turn.data].score + temp_shot ,
+      darts: players[turn.data].darts - 1,
+      total: players[turn.data].total - temp_shot
+    }
+    clicks = 2
+  }else{
+    clicks --
+    players[turn.data] = {
+      ...players[turn.data],
+      score: players[turn.data].score + temp_shot ,
+      darts: players[turn.data].darts - 1,
+      total: players[turn.data].total - temp_shot
+    }
+  }
+
+  
+
+}
   
 
   for (let i = 0; i < players.length; i++) {
@@ -272,6 +308,7 @@ const Game = () => {
   }
 
   const stuff = (value) => {
+
     clicks++
     if (typeof (value) === "string") {
 
@@ -293,9 +330,11 @@ const Game = () => {
 
     }
     else {
+
       if (value > 20) {
         multiplier = 1
       }
+      shots.push(value * multiplier)
       console.log("hit" + clicks)
       setScore({ data: value })
 
@@ -317,7 +356,7 @@ const Game = () => {
 
     }
     console.log(players)
-
+    
 
 
   }
@@ -325,7 +364,6 @@ const Game = () => {
   return (
     <>
       <div className='flex flex-col justify-start items-center  bg-[#F9DFBC] h-screen'>
-
 
   
 

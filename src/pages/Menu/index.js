@@ -77,7 +77,7 @@ const Menu = () => {
   const StartGame = () => {
     return(
 
-      navigate("/Game", { state: { numOfGames, numOfSets, selectablePlayers}})
+      navigate("/Game", { state: { numOfGames, numOfSets, selectablePlayers }})
 
       )
     }

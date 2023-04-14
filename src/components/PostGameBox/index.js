@@ -7,7 +7,7 @@ const PostGameBox = (props) => {
         <h1 className='p-1'>{props.player.name} </h1>
 
         <h2 className='p-1'>
-            Average : {props.player.total / props.player.darts}
+            Average : {props.player.total / props.player.darts * 3}
         </h2>
 
         <h2 className='p-1'> Games : {props.player.games}</h2>

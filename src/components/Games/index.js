@@ -3,11 +3,7 @@ import React from 'react'
 
 const Games = (props) => {
   return (
-
-
-        <button className="GameItem"> {props.name} </button>
-            
-
+        <div className="text-center text-white bg-black p-3 rounded w-screen font-bold fs-1"> {props.name}</div>
   ) 
 }
 

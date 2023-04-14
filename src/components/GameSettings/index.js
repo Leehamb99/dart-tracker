@@ -31,7 +31,7 @@ const GameSettings = ({ SettingGames, SettingSets }, props) => {
           {buttonGroups[0].values.map((value) => (
             <button
               key={value}
-              className={`${activeButtonGroup1 === value ? 'm-1 bg-blue-700 text-white font-bold py-2 px-4 rounded' : 'm-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'} `}
+              className={`${activeButtonGroup1 === value ? 'm-1 bg-[#F9DFBC] text-white font-bold py-2 px-4 rounded' : 'm-1 bg-[#E3292E] hover:bg-[#E3292E] text-white font-bold py-2 px-4 rounded'} `}
               onClick={() => handleClick('group1', value)}
             >
               {value}
@@ -44,7 +44,7 @@ const GameSettings = ({ SettingGames, SettingSets }, props) => {
           {buttonGroups[1].values.map((value) => (
             <button
               key={value}
-              className={`${activeButtonGroup2 === value ? 'm-1 bg-blue-700 text-white font-bold py-2 px-4 rounded' : 'm-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'}`}
+              className={`${activeButtonGroup2 === value ? 'm-1 bg-[#F9DFBC] text-white font-bold py-2 px-4 rounded' : 'm-1 bg-[#E3292E] hover:bg-[#E3292E] text-white font-bold py-2 px-4 rounded'}`}
               onClick={() => handleClick('group2', value)}
             >
               {value}

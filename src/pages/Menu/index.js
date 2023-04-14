@@ -1,19 +1,18 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+
 import { Games, Users, GameSettings } from '../../components'
-import { Game } from '../../pages'
-import Button from 'react-bootstrap/Button';
+
+
 import axios from 'axios';
-import { Login } from '../../pages'
-import { useNavigate, Route } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
 
 
 
 
 const games = ["501"]
 
-let count = 1
 
 
 const Menu = () => {
@@ -27,46 +26,43 @@ const Menu = () => {
 
   let url = "https://darts-backend-production.up.railway.app/user/"
 
-  let reqInstance = axios.create({
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem(`access_token${count}`)}`
-    }
-  }
-  )
-
-
-
-
-  const getData = async () => {
+  const getData = async (x) => {
     let res = await axios.get(url, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem(`access_token${count}`)}`
+        'Authorization': `Bearer ${localStorage.getItem(`access_token${selectablePlayers.length + 1}`)}`
       }
     })
     let data = await res.data
     console.log(data)
     let newVal = { id: data.id, name: data.username, active: false, score: 101, darts: data.darts_thrown, avg: (data.score / (data.darts_thrown / 3)).toFixed(1) }
     console.log(newVal)
-    SetselectablePlayers(selectablePlayers => [...selectablePlayers, newVal])
+    if (x === "first"){
+      console.log("first render")
+      SetselectablePlayers([newVal])
+    }
+    else{
+
+      SetselectablePlayers(selectablePlayers => [...selectablePlayers, newVal])
+
+    }
     console.log(selectablePlayers)
   }
 
   useEffect(() => {
-    getData()
+    getData("first")
   }, [])
 
   const handleNewLogin = async (e) => {
     e.preventDefault();
     try {
-      count++
       let res = await axios.post('https://darts-backend-production.up.railway.app/api/token/', {
         username: username,
         password: password
       });
       let data = await res.data
       console.log(data)
-      console.log(count)
-      localStorage.setItem(`access_token${count}`, data.access);
+      console.log(selectablePlayers.length + 1)
+      localStorage.setItem(`access_token${selectablePlayers.length + 1}`, data.access);
       
 
       getData()
@@ -102,6 +98,7 @@ const Menu = () => {
   const handleChange = (x, y) => {
     console.log("changing ", x)
     setClicks(clicks + 1)
+    console.log(selectablePlayers)
 
     if (clicks >= 0) {
       let newData = selectablePlayers
@@ -148,9 +145,9 @@ const Menu = () => {
 
          
           
-            <div className="flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center bg-[#309F6A] h-screen rounded">
 
-              <div className="GameContainer">
+              <div className="flex flex-row items-center justify-center">
                 {games.map((game, key) => (
                   <Games key={key} name={game} />
                 ))}
@@ -159,7 +156,7 @@ const Menu = () => {
 
               <h2> Users </h2>
 
-              <div className="flex flex-col items-center bg-[#309F6A] w-screen/3">
+              <div className="flex flex-col items-center bg-[#309F6A] ">
 
                 {selectablePlayers && selectablePlayers.map((player, index) => (
                   <Users handleChange={handleChange} key={index} index={index} player={player} />
@@ -190,7 +187,7 @@ const Menu = () => {
 
                 ) : (
 
-                  <Button onClick={() => AddUser()}> Add User </Button>
+                  <button className="m-2 p-6 max-w-sm mx-auto rounded-xl shadow-lg bg-[#F9DFBC] flex flex-col items-center justify-center space-x-4 hover:outline-none hover:border-4  hover:border-[#F9DFBC]" onClick={() => AddUser()}> Add User </button>
                 )
                 }
 
@@ -208,7 +205,7 @@ const Menu = () => {
                 <GameSettings numOfGames={numOfGames} numOfSets={numOfSets} SettingGames={SettingGames} SettingSets={SettingSets} />
                 
               </div>
-              <button onClick={() => StartGame()}> Start </button>
+              <button className="m-2 p-6 max-w-sm mx-auto rounded-xl shadow-lg bg-[#F9DFBC] flex flex-col items-center justify-center space-x-4 hover:outline-none hover:border-4  hover:border-[#F9DFBC]" onClick={() => StartGame()}> Start </button>
             </div>
       </div>
     </>

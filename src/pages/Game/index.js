@@ -2,7 +2,7 @@ import { Calculator, Scoreboard, BackButton } from '../../components'
 import axios from 'axios'
 
 import React, { useState, useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 const outs =
   [[170, "T20", "T20", 50], [167, "T20", "T19", 50], [164, "T20", "T18", 50],
   [161, "T20", "T17", 50], [160, "T20", "T20", "D20"], [158, "T20", "T20", "D19"],
@@ -64,6 +64,7 @@ var started = false
 let instance = []
 
 const Game = () => {
+  
 
   const location = useLocation()
 
@@ -74,23 +75,25 @@ const Game = () => {
   let selectedPlayers = location.state.selectablePlayers
 
 
-
+  const navigate = useNavigate()
 
 
   console.log('working')
   console.log(clicks)
   if (!started) {
     started = true
-    selectedPlayers.map((player, key) => {
-      if (player.active) {
-        players.push({ id: key, name: player.name, score: 101, finish: 'n/a', legs: 0, games: 0, darts: 0, total: 0, last_3: [] })
+    for (let i = 0; i < selectedPlayers.length; i++) {
+      
+      if (selectedPlayers[i].active) {
+        players.push({ id: i, name: selectedPlayers[i].name, score: 501, finish: 'n/a', legs: 0, games: 0, darts: 0, total: 0, last_3: [] })
       }
       else {
-        key--
+        i--
       }
+    }
 
-    })
-  }
+    }
+  
 
   for (let i = 0; i < players.length; i++) {
 
@@ -141,7 +144,7 @@ const Game = () => {
   }
 
   const endGame = () => {
-    alert('Winner')
+    navigate("/Postgame", { state: { players }})
   }
   const ResetGame = async () => {
     firstplayer++
@@ -159,13 +162,17 @@ const Game = () => {
       if (players[i].games === target.games) {
         console.log("Ending Game")
         endGame()
+        break;
       }
-      players[i] = {
-        ...players[i],
-        score: 501,
-        finish: 'n/a',
-        darts: 0,
-        total: 0
+      else{
+
+        players[i] = {
+          ...players[i],
+          score: 501,
+          finish: 'n/a',
+          darts: 0,
+          total: 0
+        }
       }
 
 
@@ -182,7 +189,7 @@ const Game = () => {
           ...players[turn.data],
           finish: end
         }
-        console.log(players[turn.data])
+
         return (true)
       }
 
@@ -202,7 +209,6 @@ const Game = () => {
       players[turn.data].last_3.length = 0
       setTurn({ data: 0 })
       clicks = 0
-      console.log(turn)
 
 
 
@@ -216,27 +222,31 @@ const Game = () => {
   }
 
   const WinCheck = async (val, mult, score) => {
-    console.log("checking Win")
+
 
     if (players[val].score === 0 && mult === 2 || players[val].score === 0 && score === 50) {
 
-
-      console.log("winner", players[turn.data].name)
-      players[turn.data] = {
-        ...players[turn.data],
-        legs: players[turn.data].legs + 1
-      }
-
-
-
-      if (players[turn.data].legs === target.sets) {
+      if ((players[turn.data].legs + 1) == target.sets) {
         players[turn.data] = {
           ...players[turn.data],
           games: players[turn.data].games + 1,
-          sets: 0
+          legs: 0
+        }
+        if ((players[turn.data].games == target.games)){
+          endGame()
+        }
+      } 
+      else{
+
+        console.log("winner", players[turn.data].name)
+        players[turn.data] = {
+          ...players[turn.data],
+          legs: players[turn.data].legs + 1
         }
       }
-      console.log(players[turn.data])
+
+
+
       ResetGame()
 
     }
@@ -317,7 +327,7 @@ const Game = () => {
       <div className='flex flex-col justify-start items-center  bg-[#F9DFBC] h-screen'>
 
 
-        <BackButton sets={target.sets} />
+  
 
         <div className='w-screen flex justify-between'>
           {players.map((player) => (
@@ -338,9 +348,6 @@ const Game = () => {
 
 
         </div>
-        {/* <div>
-      <button onClick={() => {setGame(true)}}>Start!</button>
-    </div> */}
       </div>
     </>
 

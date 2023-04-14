@@ -141,11 +141,11 @@ const Menu = () => {
   return (
     <>
 
-      <div className='flex flex-col justify-start items-center  bg-[#F9DFBC] h-screen'>
+      <div className='flex flex-col justify-start items-center  bg-[#309F6A] h-screen'>
 
          
           
-            <div className="flex flex-col items-center bg-[#309F6A] h-screen rounded">
+            <div className="flex flex-col items-center bg-[#309F6A] rounded">
 
               <div className="flex flex-row items-center justify-center">
                 {games.map((game, key) => (

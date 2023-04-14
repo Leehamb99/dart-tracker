@@ -377,15 +377,18 @@ const Undo = () => {
           ))}
 
         </div>
+        <div className='flex grow'>
+
         <div className='grid grid-cols-5 w-screen text-center'>
 
           {values.map((value) => (
             <Calculator key={value} stuff={stuff} number={value} score={players} />
-          )
-          )}
+            )
+            )}
 
 
         </div>
+            </div>
       </div>
     </>
 

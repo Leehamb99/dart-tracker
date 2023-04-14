@@ -7,7 +7,7 @@ const Calculator = ({number, stuff}) => {
 
             
 
-        <button className="flex grow items-center justify-center text-center m-1 bg-green-700 active:bg-red-900 text-white fs-1 font-bold rounded" onClick={() => stuff(number) }> {number} </button>
+        <button className="flex grow items-center justify-center text-center m-1 bg-green-700 active:bg-red-900 text-white fs-5 font-bold rounded" onClick={() => stuff(number) }> {number} </button>
             
 
 

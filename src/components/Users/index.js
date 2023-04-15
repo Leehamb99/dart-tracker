@@ -16,7 +16,7 @@ const Users = (props) => {
          3 Dart Average: {(props.player.avg)}
          </div>
          <div className=''>
-                Average DPL : {props.player.darts / props.player.ganes_played ? props.player.games_played : 1}
+                Average DPL : {props.player.games_played ? props.player.darts / props.player.games_played : 1 }
          </div>
          <div className=''> Games Played : {props.player.games_played}</div>
       </div>

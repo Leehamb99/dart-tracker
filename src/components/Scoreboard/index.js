@@ -2,8 +2,7 @@ import React from 'react'
 
 
 const Scoreboard = (props) => {
-    console.log(props.turn.data)
-    console.log(props.player.id)
+
     return (
         <>
 
@@ -26,11 +25,11 @@ const Scoreboard = (props) => {
                 <div className='text-white bold'>
                     Legs : {props.player.legs}
                 </div>
-                <div className='text-white bold'>
+                <h2 className='text-white bold'>
                     Last 3 : {props.player.last_3.map(score => {
                         return (score + " ")
                     })}
-                </div>
+                </h2>
                 <div className='text-white bold'>
                     Average : {(props.player.total / (props.player.darts / 3)).toFixed(1)}
                 </div>

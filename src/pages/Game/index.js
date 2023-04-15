@@ -56,22 +56,23 @@ const outs =
 
 const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 25, 50, 'Double', 'Triple', 'Miss']
 var starting = 0
-var clicks = 0
+let clicks = 0
 var multiplier = 1
 var firstplayer = 0
 var players = []
 var started = false
 let instance = []
 let shots = []
+let newTurn
 
 
 
 const Game = () => {
   
 
+  const [score, setScore] = useState({ data: 0 })
+  const [turn, setTurn] = useState({ data: 0 })
   const location = useLocation()
-
-  console.log(location.state)
 
   let numOfGames = location.state.numOfGames
   let numOfSets = location.state.numOfSets
@@ -81,8 +82,7 @@ const Game = () => {
   const navigate = useNavigate()
 
 
-  console.log('working')
-  console.log(clicks)
+
   if (!started) {
     started = true
     for (let i = 0; i < selectedPlayers.length; i++) {
@@ -96,35 +96,42 @@ const Game = () => {
     }
     }
 
-  
+    const Subtractor = (x) => {
+      console.log(shots)
+      console.log(turn.data)
+      console.log(clicks)
+      let temp_shot = shots.pop()
+      console.log(shots)
+      setScore({ data: temp_shot })
+
+
+        players[turn.data] = {
+          ...players[turn.data],
+          score: players[turn.data].score + temp_shot,
+          darts: players[turn.data].darts - 1,
+          total: players[turn.data].total - temp_shot
+      }
+
+    }
+    
 const Undo = () => {
-  if (turn.data = 0){
-    setTurn({data: players.length})
+  console.log(clicks)
+  if (turn.data === 0 && clicks === 0){
+    
+    setTurn({data: players.length - 1})
+    clicks = 2
   }
-  else{
+  else if(clicks === 0){
+
     setTurn({data: turn.data - 1})
+    clicks = 2
+
+  
+  }else{
+    clicks--
+    Subtractor()
   }
 
-  let temp_shot = shots.pop()
-  if (clicks === 0){
-    
-    
-    players[turn.data] = {
-      ...players[turn.data],
-      score: players[turn.data].score + temp_shot ,
-      darts: players[turn.data].darts - 1,
-      total: players[turn.data].total - temp_shot
-    }
-    clicks = 2
-  }else{
-    clicks --
-    players[turn.data] = {
-      ...players[turn.data],
-      score: players[turn.data].score + temp_shot ,
-      darts: players[turn.data].darts - 1,
-      total: players[turn.data].total - temp_shot
-    }
-  }
 
   
 
@@ -148,9 +155,7 @@ const Undo = () => {
 
 
 
-  const [score, setScore] = useState({ data: 0 })
-  const [turn, setTurn] = useState({ data: 0 })
-  console.log(players)
+
   var end = 0
   var target = { sets: numOfSets, games: numOfGames }
 
@@ -168,9 +173,15 @@ const Undo = () => {
   }, [score])
 
   useEffect(() => {
-    starting = players[turn.data].score
-    console.log("running")
-  }, [turn])
+    if (clicks === 2){
+      Subtractor()
+    }else{
+
+      starting = players[turn.data].score
+      console.log("running")
+      players[turn.data].last_3.length = 0
+    }
+  }, [turn] )
 
   const LessThan40 = (x) => {
     players[x] = {
@@ -242,7 +253,7 @@ const Undo = () => {
   const SettingTurn = () => {
 
     if (turn.data === (players.length - 1) && clicks > 2) {
-      players[turn.data].last_3.length = 0
+
       setTurn({ data: 0 })
       clicks = 0
 
@@ -250,7 +261,7 @@ const Undo = () => {
 
     }
     else if (clicks > 2) {
-      players[turn.data].last_3.length = 0
+
       setTurn({ data: turn.data + 1 })
       clicks = 0
 
@@ -298,10 +309,8 @@ const Undo = () => {
       if (turn.data === players.length - 1) {
 
         setTurn({ data: 0 })
-        players[turn.data].last_3.length = 0
       } else {
         setTurn({ data: turn.data + 1 })
-        players[turn.data].last_3.length = 0
       }
     }
 
@@ -355,7 +364,6 @@ const Undo = () => {
       multiplier = 1
 
     }
-    console.log(players)
     
 
 
@@ -365,7 +373,7 @@ const Undo = () => {
     <>
       <div className='flex flex-col justify-start items-center  bg-[#F9DFBC] h-screen'>
 
-  
+      <BackButton Undo={Undo} />
 
         <div className='w-screen flex justify-between'>
           {players.map((player) => (
@@ -389,6 +397,7 @@ const Undo = () => {
 
         </div>
             </div>
+          
       </div>
     </>
 

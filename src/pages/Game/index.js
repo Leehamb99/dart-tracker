@@ -82,6 +82,14 @@ const Game = () => {
   const navigate = useNavigate()
 
 
+  const [activeMulti, setActiveMulti ] = useState({data: 70})
+
+  const handleMulti = (number) => {
+    if (number == "Triple" || number == "Double" ){
+      setActiveMulti({data : number})
+    }
+      
+  }
 
   if (!started) {
     started = true
@@ -317,10 +325,13 @@ const Undo = () => {
 
   }
 
-  const stuff = (value) => {
 
+
+  const stuff = (value) => {
+    handleMulti(value)
     clicks++
     if (typeof (value) === "string") {
+
 
       if (value === 'Double') {
         multiplier = 2
@@ -341,6 +352,7 @@ const Undo = () => {
     }
     else {
 
+      setActiveMulti({data: 70})
       if (value > 20) {
         multiplier = 1
       }
@@ -376,10 +388,10 @@ const Undo = () => {
 
       <BackButton Undo={Undo} />
 
-        <div className='w-screen flex justify-between'>
+        <div className='w-screen flex border border-[#F9DFBC] border-collapse justify-between'>
           {players.map((player) => (
 
-            <Scoreboard end={end} turn={turn} player={player} score={score} />
+            <Scoreboard  end={end} turn={turn} player={player} score={score} />
 
 
 
@@ -391,7 +403,7 @@ const Undo = () => {
         <div className='grid grid-cols-5 w-screen text-center'>
 
           {values.map((value) => (
-            <Calculator key={value} stuff={stuff} number={value} score={players} />
+            <Calculator key={value} activeMulti={activeMulti} stuff={stuff} number={value} score={players} />
             )
             )}
 

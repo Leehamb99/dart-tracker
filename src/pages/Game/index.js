@@ -111,6 +111,7 @@ const Game = () => {
           darts: players[turn.data].darts - 1,
           total: players[turn.data].total - temp_shot
       }
+      players[turn.data].last_3.pop()
 
     }
     

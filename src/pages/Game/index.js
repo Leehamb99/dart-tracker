@@ -202,19 +202,32 @@ const Undo = () => {
   const endGame = () => {
     navigate("/Postgame", { state: { players }})
   }
-  const ResetGame = async () => {
+  const ResetGame = async (winner) => {
     firstplayer++
     clicks = 0
     if (firstplayer === players.length) {
       firstplayer = 0
     }
     for (let i = 0; i < players.length; i++) {
-      await instance[i].request({
-        data: {
-          score: players[i].total,
-          darts_thrown: players[i].darts
-        }
+      if (i == winner ){
+        await instance[i].request({
+          data: {
+            score: players[i].total,
+            darts_thrown: players[i].darts,
+            games_won: 1
+          }
       })
+    }
+      else{
+        await instance[i].request({
+          data: {
+            score: players[i].total,
+            darts_thrown: players[i].darts
+          }
+          })
+    }
+  
+    
       if (players[i].games === target.games) {
         console.log("Ending Game")
         endGame()
@@ -288,9 +301,8 @@ const Undo = () => {
           games: players[turn.data].games + 1,
           legs: 0
         }
-        if ((players[turn.data].games == target.games)){
-          endGame()
-        }
+        ResetGame(turn.data)
+
       } 
       else{
 
@@ -299,11 +311,12 @@ const Undo = () => {
           ...players[turn.data],
           legs: players[turn.data].legs + 1
         }
+        ResetGame(turn.data)
       }
 
 
 
-      ResetGame()
+      
 
     }
 

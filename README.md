@@ -12,3 +12,6 @@ Known Bugs :
   - Triple and Double Toggle not implemented. 
   
 
+Created with React.JS, utilizing react-router-dom, axios and tailwindCSS.
+
+Consumes an API built by myself that consists of Python (Django), rest_framework lib and simple_jwt.

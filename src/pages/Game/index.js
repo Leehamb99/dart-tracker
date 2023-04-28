@@ -64,6 +64,7 @@ var started = false
 let instance = []
 let shots = []
 let newTurn
+let data = []
 
 
 
@@ -96,7 +97,7 @@ const Game = () => {
     for (let i = 0; i < selectedPlayers.length; i++) {
       
       if (selectedPlayers[i].active) {
-        players.push({ id: players.length , name: selectedPlayers[i].name, score: 501, finish: 'n/a', legs: 0, games: 0, darts: 0, total: 0, last_3: []   })
+        players.push({ id: players.length , name: selectedPlayers[i].name, score: 501, finish: 'n/a', legs: 0, games: 0, darts: 0, total: 0, last_3: [], db_id : selectedPlayers[i].id })
       }
     }
     }
@@ -139,18 +140,18 @@ const Undo = () => {
   }
 }
 
-  for (let i = 0; i < players.length; i++) {
 
 
-    instance[i] = axios.create({
+
+   let instance = axios.create({
       headers: {
-        Authorization: `Bearer ${localStorage.getItem(`access_token${i+1}`)}` // loop here through access tokens `access_token${i}`
+        Authorization: `Bearer ${localStorage.getItem(`access_token1`)}` // loop here through access tokens `access_token${i}`
       },
       baseURL: 'https://darts-backend-production.up.railway.app/edit/',
       method: 'PATCH',
       timeout: 5000
     })
-  }
+
 
   var end = 0
   var target = { sets: numOfSets, games: numOfGames }
@@ -184,41 +185,29 @@ const Undo = () => {
     }
   }
 
-  const endGame = () => {
+  const endGame = async () => {
+
+    await instance.request({
+      data: data
+    })
     navigate("/Postgame", { state: { players }})
   }
+  
   const ResetGame = async (winner) => {
+    CollectData()
+    await instance.request({
+      data: data
+    })
+
     firstplayer++
     clicks = 0
     if (firstplayer === players.length) {
       firstplayer = 0
     }
     for (let i = 0; i < players.length; i++) {
-      if (i == winner ){
-        await instance[i].request({
-          data: {
-            score: players[i].total,
-            darts_thrown: players[i].darts,
-            games_won: 1
-          }
-      })
-    }
-      else{
-        await instance[i].request({
-          data: {
-            score: players[i].total,
-            darts_thrown: players[i].darts
-          }
-          })
-    }
-  
-    
-      if (players[i].games === target.games) {
-        console.log("Ending Game")
-        endGame()
-        break;
-      }
-      else{
+
+
+
 
         players[i] = {
           ...players[i],
@@ -227,13 +216,39 @@ const Undo = () => {
           darts: 0,
           total: 0
         }
-      }
-
-
+        setTurn({ data: firstplayer })
 
     }
-    setTurn({ data: firstplayer })
+    
+
+    }
+  
+
+
+    
+  const CollectData = (winner) => {
+
+    for (let i = 0; i < players.length; i++) {
+      if (i == winner ){
+        
+          data.push({
+            id: players[i].db_id,
+            score: players[i].total,
+            darts_thrown: players[i].darts,
+            games_won: 1
+          })  
+      }
+    
+      else{
+          data.push({
+            id: players[i].db_id,
+            score: players[i].total,
+            darts_thrown: players[i].darts
+
+          })
+          }}
   }
+  
 
   const checkVal = (val) => {
     for (let i = 0; i < outs.length; i++) {
@@ -280,7 +295,17 @@ const Undo = () => {
 
     if (players[val].score === 0 && mult === 2 || players[val].score === 0 && score === 50) {
 
-      if ((players[turn.data].legs + 1) == target.sets) {
+      if (players[turn.data].legs + 1 == target.sets && players[turn.data].games + 1 == target.games){
+        console.log("works")
+        players[turn.data] = {
+          ...players[turn.data],
+          games: players[turn.data].games + 1
+        }
+        CollectData(turn.data)
+        endGame()
+      }
+
+      else if ((players[turn.data].legs + 1) == target.sets) {
         players[turn.data] = {
           ...players[turn.data],
           games: players[turn.data].games + 1,
@@ -298,10 +323,6 @@ const Undo = () => {
         }
         ResetGame(turn.data)
       }
-
-
-
-      
 
     }
 

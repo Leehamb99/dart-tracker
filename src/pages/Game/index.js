@@ -96,10 +96,7 @@ const Game = () => {
     for (let i = 0; i < selectedPlayers.length; i++) {
       
       if (selectedPlayers[i].active) {
-        players.push({ id: i, name: selectedPlayers[i].name, score: 501, finish: 'n/a', legs: 0, games: 0, darts: 0, total: 0, last_3: [] })
-      }
-      else {
-        i--
+        players.push({ id: players.length , name: selectedPlayers[i].name, score: 501, finish: 'n/a', legs: 0, games: 0, darts: 0, total: 0, last_3: []   })
       }
     }
     }
@@ -140,12 +137,7 @@ const Undo = () => {
     clicks--
     Subtractor()
   }
-
-
-  
-
 }
-  
 
   for (let i = 0; i < players.length; i++) {
 
@@ -160,15 +152,8 @@ const Undo = () => {
     })
   }
 
-
-
-
-
-
   var end = 0
   var target = { sets: numOfSets, games: numOfGames }
-
-
 
   useEffect(() => {
     console.log("resetting")

@@ -32,19 +32,29 @@ const Menu = () => {
         'Authorization': `Bearer ${localStorage.getItem(`access_token${selectablePlayers.length + 1}`)}`
       }
     })
-    let data = await res.data
-    console.log(data)
-    let newVal = { id: data.id, name: data.username, active: false, score: 101, darts: data.darts_thrown, avg: (data.score / (data.darts_thrown / 3)).toFixed(1), games_played: data.games_played, games_won: data.games_won }
-    console.log(newVal)
+    let raw = await res.data
+    let player_data = raw.player
+    let friends_data = raw.related_players // left off here
     if (x === "first"){
+
+      let newVal = { id: player_data.id, name: player_data.username, active: false, score: 101, darts: player_data.darts_thrown, avg: (player_data.score / (player_data.darts_thrown / 3)).toFixed(1), games_played: player_data.games_played, games_won: player_data.games_won }
+      console.log(newVal)
       console.log("first render")
       SetselectablePlayers([newVal])
+      for (let i = 0; i < friends_data.length; i++) { 
+        let newVal = { id: friends_data[i].id, name: friends_data[i].username, active: false, score: 101, darts: friends_data[i].darts_thrown, avg: (friends_data[i].score / (friends_data[i].darts_thrown / 3)).toFixed(1), games_played: friends_data[i].games_played, games_won: friends_data[i].games_won }
+        SetselectablePlayers(selectablePlayers => [...selectablePlayers, newVal])
+      }
     }
-    else{
 
-      SetselectablePlayers(selectablePlayers => [...selectablePlayers, newVal])
 
-    }
+
+
+    
+
+    
+
+    
     console.log(selectablePlayers)
   }
 
@@ -55,17 +65,23 @@ const Menu = () => {
   const handleNewLogin = async (e) => {
     e.preventDefault();
     try {
-      let res = await axios.post('https://darts-backend-production.up.railway.app/api/token/', {
+      let res = await axios.post('https://darts-backend-production.up.railway.app/adduser/', {
         username: username,
         password: password
-      });
+      } , {
+
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem(`access_token1`)}`
+        }
+      }
+      );
       let data = await res.data
       console.log(data)
-      console.log(selectablePlayers.length + 1)
-      localStorage.setItem(`access_token${selectablePlayers.length + 1}`, data.access);
+      // console.log(selectablePlayers.length + 1)
+      // localStorage.setItem(`access_token${selectablePlayers.length + 1}`, data.access);
       
 
-      getData()
+      // getData()
 
     } catch (error) {
       console.log(error);

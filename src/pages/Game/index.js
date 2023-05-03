@@ -406,8 +406,10 @@ const Undo = () => {
       <div className='flex flex-col justify-start items-center  bg-[#F9DFBC] h-screen'>
 
       <BackButton Undo={Undo} />
+      <div className='w-screen mx-auto overflow-auto'>
 
-        <div className='w-screen flex border border-[#F9DFBC] border-collapse justify-between'>
+
+        <div className='overflow-x-auto flex border border-[#F9DFBC] border-collapse justify-between'>
           {players.map((player) => (
 
             <Scoreboard  end={end} turn={turn} player={player} score={score} />
@@ -417,6 +419,7 @@ const Undo = () => {
           ))}
 
         </div>
+      </div>
         <div className='flex grow'>
 
         <div className='grid grid-cols-5 w-screen text-center'>

@@ -1,12 +1,21 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 
 
 const Scoreboard = (props) => {
+    const idRef = useRef(null)
+
+    useEffect(() => {
+        if (props.turn.data === props.player.id)
+        idRef.current.scrollIntoView({
+            behavior: 'smooth'
+        })
+
+    })
 
     return (
         <>
 
-            <div className={props.turn.data === props.player.id ? "w-screen bg-[#309F6A] flex flex-col items-center" : "w-screen bg-[#E3292E] flex flex-col items-center"}>
+            <div ref={idRef} className={props.turn.data === props.player.id ? "flex-none w-1/2 bg-[#309F6A] flex flex-col items-center" : "flex-none w-1/2 bg-[#E3292E] flex flex-col items-center"}>
                 <h2 className='text-white bold'>
 
                     {props.player.name}

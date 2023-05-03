@@ -20,41 +20,36 @@ const Menu = () => {
   const [selectablePlayers, SetselectablePlayers] = useState([])
   const [password, setPassword] = useState()
   const [username, setUsername] = useState()
-  
+
 
   const navigate = useNavigate()
+
 
   let url = "https://darts-backend-production.up.railway.app/user/"
 
   const getData = async (x) => {
+    SetselectablePlayers([])
     let res = await axios.get(url, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem(`access_token${selectablePlayers.length + 1}`)}`
+        'Authorization': `Bearer ${localStorage.getItem(`access_token1`)}`
       }
     })
     let raw = await res.data
     let player_data = raw.player
     let friends_data = raw.related_players // left off here
-    if (x === "first"){
+    if (x === "first") {
 
       let newVal = { id: player_data.id, name: player_data.username, active: false, score: 101, darts: player_data.darts_thrown, avg: (player_data.score / (player_data.darts_thrown / 3)).toFixed(1), games_played: player_data.games_played, games_won: player_data.games_won }
       console.log(newVal)
       console.log("first render")
       SetselectablePlayers([newVal])
-      for (let i = 0; i < friends_data.length; i++) { 
+      for (let i = 0; i < friends_data.length; i++) {
         let newVal = { id: friends_data[i].id, name: friends_data[i].username, active: false, score: 101, darts: friends_data[i].darts_thrown, avg: (friends_data[i].score / (friends_data[i].darts_thrown / 3)).toFixed(1), games_played: friends_data[i].games_played, games_won: friends_data[i].games_won }
         SetselectablePlayers(selectablePlayers => [...selectablePlayers, newVal])
       }
     }
 
 
-
-
-    
-
-    
-
-    
     console.log(selectablePlayers)
   }
 
@@ -68,7 +63,7 @@ const Menu = () => {
       let res = await axios.post('https://darts-backend-production.up.railway.app/adduser/', {
         username: username,
         password: password
-      } , {
+      }, {
 
         headers: {
           'Authorization': `Bearer ${localStorage.getItem(`access_token1`)}`
@@ -79,9 +74,9 @@ const Menu = () => {
       console.log(data)
       // console.log(selectablePlayers.length + 1)
       // localStorage.setItem(`access_token${selectablePlayers.length + 1}`, data.access);
-      
 
-      // getData()
+
+      getData("first")
 
     } catch (error) {
       console.log(error);
@@ -91,12 +86,12 @@ const Menu = () => {
 
 
   const StartGame = () => {
-    return(
+    return (
 
-      navigate("/Game", { state: { numOfGames, numOfSets, selectablePlayers }})
+      navigate("/Game", { state: { numOfGames, numOfSets, selectablePlayers } })
 
-      )
-    }
+    )
+  }
 
 
 
@@ -157,72 +152,78 @@ const Menu = () => {
   return (
     <>
 
-      <div className='flex flex-col justify-start items-center  bg-[#309F6A] h-screen'>
-
-         
-          
-            <div className="flex flex-col items-center bg-[#309F6A] rounded">
-
-              <div className="flex flex-row items-center justify-center">
-                {games.map((game, key) => (
-                  <Games key={key} name={game} />
-                ))}
-
-              </div>
-
-              <h2> Users </h2>
-
-              <div className="flex flex-col items-center bg-[#309F6A] ">
-
-                {selectablePlayers && selectablePlayers.map((player, index) => (
-                  <Users handleChange={handleChange} key={index} index={index} player={player} />
-                ))}
-
-                {adding ? (
-
-                  <form onSubmit={handleNewLogin}>
-                    <label htmlFor="Username">Username</label>
-                    <input
-                      type="username"
-                      id="username"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <label htmlFor="password">Password</label>
-                    <input
-                      type="password"
-                      id="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <button type="submit">Login</button>
-                  </form>
+      <div className='flex flex-col justify-start items-center bg-[#309F6A] h-screen w-screen'>
 
 
 
+        <div className="flex flex-col items-center bg-[#309F6A] rounded">
 
-                ) : (
+          <div className="flex flex-row items-center justify-center">
+            {games.map((game, key) => (
+              <Games key={key} name={game} />
+            ))}
 
-                  <button className="m-2 p-6 max-w-sm mx-auto rounded-xl shadow-lg bg-[#F9DFBC] flex flex-col items-center justify-center space-x-4 hover:outline-none hover:border-4  hover:border-[#F9DFBC]" onClick={() => AddUser()}> Add User </button>
-                )
-                }
+          </div>
 
+          <h2> Users </h2>
+          <div className='w-screen mx-auto overflow-auto'>
 
+            <div className=" overflow-x-auto flex items-center bg-[#309F6A]">
 
-
-
-
-              </div>
-
-              <h1> Game Settings </h1>
-
-              <div className="flex justify-center">
-
-                <GameSettings numOfGames={numOfGames} numOfSets={numOfSets} SettingGames={SettingGames} SettingSets={SettingSets} />
-                
-              </div>
-              <button className="m-2 p-6 max-w-sm mx-auto rounded-xl shadow-lg bg-[#F9DFBC] flex flex-col items-center justify-center space-x-4 hover:outline-none hover:border-4  hover:border-[#F9DFBC]" onClick={() => StartGame()}> Start </button>
+              {selectablePlayers && selectablePlayers.map((player, index) => (
+                <Users handleChange={handleChange} key={index} index={index} player={player} />
+              ))}
             </div>
+
+          </div>
+
+          <div className='flex flex-col items-center justify-center'>
+
+            {adding ? (
+
+              <form className='flex flex-col items-center' onSubmit={handleNewLogin}>
+                <label htmlFor="Username">Username</label>
+                <input
+                  type="username"
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                />
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <button type="submit">Login</button>
+              </form>
+
+
+
+
+            ) : (
+
+              <button className="m-2 p-6 max-w-sm mx-auto rounded-xl shadow-lg bg-[#F9DFBC] flex flex-col items-center justify-center space-x-4 hover:outline-none hover:border-4  hover:border-[#F9DFBC]" onClick={() => AddUser()}> Add User </button>
+            )
+            }
+          </div>
+
+
+
+
+
+
+
+          <h1> Game Settings </h1>
+
+          <div className="flex justify-center">
+
+            <GameSettings numOfGames={numOfGames} numOfSets={numOfSets} SettingGames={SettingGames} SettingSets={SettingSets} />
+
+          </div>
+          <button className="m-2 p-6 max-w-sm mx-auto rounded-xl shadow-lg bg-[#F9DFBC] flex flex-col items-center justify-center space-x-4 hover:outline-none hover:border-4  hover:border-[#F9DFBC]" onClick={() => StartGame()}> Start </button>
+        </div>
       </div>
     </>
   )

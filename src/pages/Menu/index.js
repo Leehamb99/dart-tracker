@@ -16,7 +16,7 @@ const games = ["501"]
 
 
 const Menu = () => {
-
+  const [mainPlayer, setMainPlayer] = useState()
   const [selectablePlayers, SetselectablePlayers] = useState([])
   const [password, setPassword] = useState()
   const [username, setUsername] = useState()
@@ -35,8 +35,9 @@ const Menu = () => {
       }
     })
     let raw = await res.data
+    setMainPlayer(raw.player)
     let player_data = raw.player
-    let friends_data = raw.related_players // left off here
+    let friends_data = raw.related_players
     if (x === "first") {
 
       let newVal = { id: player_data.id, name: player_data.username, active: false, score: 101, darts: player_data.darts_thrown, avg: (player_data.score / (player_data.darts_thrown / 3)).toFixed(1), games_played: player_data.games_played, games_won: player_data.games_won }
@@ -83,6 +84,24 @@ const Menu = () => {
       alert('Login failed');
     }
   };
+
+  const deletePlayer = async (id) => {
+    try{
+
+      let res = await axios.delete('https://darts-backend-production.up.railway.app/removeuser/', {
+       data: {
+          main: mainPlayer.id,
+          friend: id
+        }
+      })
+      console.log(res)
+    } catch(error) {
+      console.log(error)
+    }
+
+
+
+  }
 
 
   const StartGame = () => {
@@ -168,10 +187,10 @@ const Menu = () => {
           <h2> Users </h2>
           <div className='w-screen mx-auto overflow-auto'>
 
-            <div className=" overflow-x-auto flex items-center bg-[#309F6A]">
+            <div className="overflow-x-auto w-screen flex items-center bg-[#309F6A]">
 
               {selectablePlayers && selectablePlayers.map((player, index) => (
-                <Users handleChange={handleChange} key={index} index={index} player={player} />
+                <Users handleChange={handleChange} deletePlayer={deletePlayer} key={index} index={index} player={player} />
               ))}
             </div>
 
